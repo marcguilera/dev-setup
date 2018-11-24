@@ -1,0 +1,8 @@
+name: dev_setup
+description: A sample command-line application.
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dependencies:
+  console: ^3.0.0
