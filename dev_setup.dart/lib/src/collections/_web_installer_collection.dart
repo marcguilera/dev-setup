@@ -1,8 +1,7 @@
 part of 'installer_collection.dart';
 
-class _WebInstallerCollection extends _ExtrasInstallerCollection {
+class _WebInstallerCollection extends _InstallerCollectionBase {
   _WebInstallerCollection(): super() {
-    _addJava();
-    _addWeb();
+    _dart("angular_cli", cmd: "ngdart");
   }
 }

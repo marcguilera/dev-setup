@@ -5,6 +5,7 @@ enum InstallationOption {
   web,
   mobile,
   backend,
+  extras,
   all
 }
 
@@ -35,22 +36,9 @@ class InstallationMenu {
         "[$index] ${formatOption(option)}";
     final chooser = Chooser(InstallationOption.values, formatter: formatChooser, message: message);
     final option = doChoose(chooser);
-    final installation = _select(option);
+    final installation = InstallerCollection.fromOption(option);
     writeLine("You chose to install ${formatOption(option)}. Let's go!\n");
     return installation;
   }
 
-  InstallerCollection _select(InstallationOption option) {
-    InstallerCollection installation;
-
-    switch (option) {
-      case InstallationOption.basic: installation = InstallerCollection.basic(); break;
-      case InstallationOption.web: installation = InstallerCollection.web(); break;
-      case InstallationOption.mobile: installation = InstallerCollection.mobile(); break;
-      case InstallationOption.backend: installation = InstallerCollection.backend(); break;
-      case InstallationOption.all: installation = InstallerCollection.all(); break;
-    }
-
-    return installation;
-  }
 }

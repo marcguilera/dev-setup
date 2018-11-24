@@ -1,8 +1,7 @@
 part of 'installer_collection.dart';
 
-class _BackendInstallerCollection extends _ExtrasInstallerCollection {
+class _BackendInstallerCollection extends _InstallerCollectionBase {
   _BackendInstallerCollection(): super() {
-    _addJava();
-    _addBackend();
+    _dart("aqueduct");
   }
 }
