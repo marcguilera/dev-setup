@@ -3,13 +3,13 @@ import 'package:dev_setup/dev_setup.dart';
 
 class InstallationHandler {
 
-  Future install(List<Installer> installers) async {
+  Future install(InstallerCollection installation) async {
     final stopwatch = Stopwatch()..start();
     final installed = List<String>();
     final skipped = List<String>();
     final notInstalled = List<String>();
     final bashProfiles = List<String>();
-    for (var installer in installers) {
+    for (var installer in installation.installers) {
       final isInstalled = await installer.isInstalled;
       if (!isInstalled) {
         final prompter = Prompter(" > Do you want to install '${installer.name}'? ");

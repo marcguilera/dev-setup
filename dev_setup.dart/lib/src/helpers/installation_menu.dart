@@ -24,10 +24,10 @@ class InstallationMenu {
     writeLine("Dev Setup", bold: true);
     nextLine();
     final installation = _showMenu();
-    await handler.install(installation.installers);
+    await handler.install(installation);
   }
 
-  Installation _showMenu() {
+  InstallerCollection _showMenu() {
     final message = "Choose an option to install: ";
     String formatOption(InstallationOption option) =>
         option.toString().replaceAll("InstallationOption.", "");
@@ -40,15 +40,15 @@ class InstallationMenu {
     return installation;
   }
 
-  Installation _select(InstallationOption option) {
-    Installation installation;
+  InstallerCollection _select(InstallationOption option) {
+    InstallerCollection installation;
 
     switch (option) {
-      case InstallationOption.basic: installation = Installation(); break;
-      case InstallationOption.web: installation = Installation.web(); break;
-      case InstallationOption.mobile: installation = Installation.mobile(); break;
-      case InstallationOption.backend: installation = Installation.backend(); break;
-      case InstallationOption.all: installation = Installation.all(); break;
+      case InstallationOption.basic: installation = InstallerCollection.basic(); break;
+      case InstallationOption.web: installation = InstallerCollection.web(); break;
+      case InstallationOption.mobile: installation = InstallerCollection.mobile(); break;
+      case InstallationOption.backend: installation = InstallerCollection.backend(); break;
+      case InstallationOption.all: installation = InstallerCollection.all(); break;
     }
 
     return installation;
