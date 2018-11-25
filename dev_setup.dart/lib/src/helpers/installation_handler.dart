@@ -1,51 +1,67 @@
-import 'package:dev_setup/dev_setup.dart';
+import 'dart:io';
 
+import 'package:dev_setup/dev_setup.dart';
+import 'package:meta/meta.dart';
+
+const BASH_PROFILE = "~/.bash_profile";
+
+class InstallationResult {
+  final Iterable<Installer> installed;
+  final Iterable<Installer> skipped;
+  final Iterable<Installer> notInstalled;
+  final Stopwatch stopwatch;
+  final Iterable<String> bash;
+
+  const InstallationResult({
+    @required this.installed,
+    @required this.skipped,
+    @required this.notInstalled,
+    @required this.stopwatch,
+    @required this.bash
+  });
+}
 
 class InstallationHandler {
 
-  void install(InstallerCollection installation) {
-    final stopwatch = Stopwatch()..start();
-    final installed = List<String>();
-    final skipped = List<String>();
-    final notInstalled = List<String>();
+  InstallationResult install(InstallerCollection installation) {
+
+    final installed = List<Installer>();
+    final skipped = List<Installer>();
+    final notInstalled = List<Installer>();
+    final stopwatch = new Stopwatch();
     final bash = List<String>();
-    for (var installer in installation.installers) {
-      final isInstalled = installer.isInstalled;
-      if (!isInstalled) {
-        final prompter = Prompter(" > Do you want to install '${installer.name}'? ");
+
+    stopwatch.start();
+    final size = installation.installers.length;
+
+    installation.installers.toList().asMap().forEach((i, installer) {
+      final leading = "[${i+1}/$size]";
+      if (!installer.isInstalled) {
+        final prompter = Prompter("  > Do you want to install '${installer.name}'? ");
         if (doPrompt(prompter)) {
-          writeLine ("Installing '${installer.name}'...");
+          writeLine("$leading Installing '${installer.name}'...", bold: true, color: Color.CYAN);
           installer.install();
-          installed.add(installer.name);
+          installed.add(installer);
           bash.addAll(installer.bash);
-          writeLine ("Done installing '${installer.name}'");
+          writeLine("  Done installing '${installer.name}'", color: Color.GREEN);
         } else {
-          writeLine("You skipped '${installer.name}' which is not installed in your computer", bold: true);
-          notInstalled.add(installer.name);
+          writeLine("$leading You skipped '${installer.name}' which is not installed in your computer", bold: true, color: Color.DARK_RED);
+          notInstalled.add(installer);
         }
       } else {
-        writeLine ("'${installer.name}' is already installed, skipping...");
-        skipped.add(installer.name);
+        writeLine("$leading '${installer.name}' is already installed, skipping...", color: Color.GRAY);
+        skipped.add(installer);
       }
-    }
-    nextLine();
-    writeLine("Installed ${installed.length} packages: $installed", bold: true);
-    writeLine("Skipped ${notInstalled.length} packages: $notInstalled", bold: true);
-    writeLine("Done! Elapsed: ${stopwatch.elapsed}", bold: true);
+    });
+
     stopwatch.stop();
 
-    _bashProfile(bash);
-  }
-
-  void _bashProfile(List<String> bashProfiles) {
-    if (bashProfiles.isNotEmpty) {
-      nextLine();
-      writeLine("Add this to your bash_profile file:");
-      writeLine("----------------------------------------------");
-      for(var line in bashProfiles) {
-        writeLine(line);
-      }
-      writeLine("----------------------------------------------");
-    }
+    return InstallationResult(
+      installed: installed,
+      skipped: skipped,
+      notInstalled: notInstalled,
+      stopwatch: stopwatch,
+      bash: bash
+    );
   }
 }

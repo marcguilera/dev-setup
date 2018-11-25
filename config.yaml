@@ -46,11 +46,9 @@ commands:
       args:
         - flutter-sdk/
         - /usr/local/var/flutter-sdk
+  void:
     -
-      exec: rm
-      args:
-        - -rf
-        - flutter-sdk
+      exec: echo
 
 # Types of installations available and how to execute them.
 

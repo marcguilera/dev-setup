@@ -13,7 +13,7 @@ class Installer {
     @required InstallerType type,
     @required String name,
     String cmd,
-    Iterable<String> bash
+    List<String> bash
   }): this.name = name,
       this.cmd = cmd ?? name,
       this.bash = bash ?? const [],
@@ -40,4 +40,8 @@ class Installer {
   String _format(String run) => run
     .replaceAll("\${cmd}", cmd)
     .replaceAll("\${name}", name);
+
+  @override
+  String toString() => name;
+
 }

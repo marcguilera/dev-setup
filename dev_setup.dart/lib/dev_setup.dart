@@ -9,13 +9,14 @@ export 'src/helpers/installation_handler.dart';
 export 'src/helpers/installation_menu.dart';
 export 'src/installers/installer_type.dart';
 export 'src/reader/file_reader.dart';
-
-import 'src/helpers/installation_menu.dart';
-import 'src/reader/installer_collection_parser.dart';
+export 'src/helpers/installation_menu.dart';
+export 'src/reader/installer_collection_parser.dart';
+import 'package:dev_setup/dev_setup.dart';
 
 void setup(List<String> arguments) {
   final parser = InstallerCollectionParser.fromFile(CONFIG);
   final menu = InstallationMenu.generic(parser.parse());
   menu.draw();
+  resetConsole();
 }
 

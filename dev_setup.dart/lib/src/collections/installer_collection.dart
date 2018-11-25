@@ -13,4 +13,8 @@ class InstallerCollection {
   }): this.name = name,
       this.isHidden = isPrivate ?? false,
       this.installers = installers ?? const [];
+
+  @override
+  String toString() => name;
+
 }

@@ -1,7 +1,7 @@
 import 'package:dev_setup/dev_setup.dart';
 import 'package:yaml/yaml.dart';
 
-final CONFIG = "../config.yaml";
+const CONFIG = "../config.yaml";
 
 class InstallerCollectionParser {
   final Map yaml;
@@ -58,8 +58,8 @@ class InstallerCollectionParser {
     YamlList installYaml = typeYaml["install"];
     YamlList isInstalledYaml = typeYaml["is_installed"];
     return InstallerType(
-      install: installYaml.cast<String>().map(_parseCommand).expand((x) => x),
-      isInstalled: isInstalledYaml.cast<String>().map(_parseCommand).expand((x) => x)
+      install: installYaml.cast<String>().map(_parseCommand).expand((x) => x).toList(),
+      isInstalled: isInstalledYaml.cast<String>().map(_parseCommand).expand((x) => x).toList()
     );
   }
 
