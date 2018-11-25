@@ -51,9 +51,6 @@ commands:
       args:
         - -rf
         - flutter-sdk
-  nothing:
-    -
-      exec: echo
 
 # Types of installations available and how to execute them.
 
@@ -82,7 +79,7 @@ types:
     install:
       - install-flutter
     is_installed:
-      - nothing
+      - exists
 
 # The packages to install and which installation type to use.
 
