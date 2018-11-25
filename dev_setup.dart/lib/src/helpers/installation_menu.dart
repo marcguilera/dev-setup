@@ -1,13 +1,11 @@
-import 'dart:io';
-
-import 'package:dev_setup/dev_setup.dart';
+import 'package:dev_setup/indernal.dart';
 
 class InstallationMenu {
 
-  final InstallationHandler handler;
-  final Iterable<InstallerCollection> collections;
+  final InstallationHandler _handler;
+  final Iterable<InstallerCollection> _collections;
 
-  InstallationMenu(this.handler, this.collections);
+  InstallationMenu(this._handler, this._collections);
   factory InstallationMenu.generic(Iterable<InstallerCollection> collections) {
     final handler = InstallationHandler();
     return InstallationMenu(handler, collections);
@@ -18,20 +16,21 @@ class InstallationMenu {
     writeLine("DEV SETUP CLI" , bold: true, color: Color.YELLOW);
     nextLine();
     final installation = _showMenu();
-    final result = handler.install(installation);
+    final result = _handler.install(installation);
     nextLine();
     _showResult(result);
   }
 
   InstallerCollection _showMenu() {
     final message = "Choose an option to install: ";
-    final options = collections
+    final options = _collections
         .where((collection) => !collection.isHidden)
         .map(_format)
-        .toList();
+        .toList()
+        ..sort();
     final chooser = Chooser(options, message: message);
     final option = doChoose(chooser);
-    final installation = collections
+    final installation = _collections
         .firstWhere((collection) => _format(collection) == option);
     writeLine("You chose to install $option. Let's go!", color: Color.GOLD);
     nextLine();

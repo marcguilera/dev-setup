@@ -7,3 +7,4 @@ environment:
 dependencies:
   console: ^3.0.0
   yaml: ^2.1.15
+  quiver: ^2.0.1

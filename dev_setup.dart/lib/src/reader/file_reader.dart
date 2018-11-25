@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:yaml/yaml.dart';
+import 'package:dev_setup/indernal.dart';
 
 class FileReader {
   FileReader._();

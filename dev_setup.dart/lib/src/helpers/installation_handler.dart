@@ -1,7 +1,4 @@
-import 'dart:io';
-
-import 'package:dev_setup/dev_setup.dart';
-import 'package:meta/meta.dart';
+import 'package:dev_setup/indernal.dart';
 
 const BASH_PROFILE = "~/.bash_profile";
 

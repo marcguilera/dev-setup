@@ -13,6 +13,7 @@ commands:
       args:
         - install
         - ${name}
+        - --force
   install-cask:
     -
       exec: brew
@@ -20,6 +21,7 @@ commands:
         - cask
         - install
         - ${name}
+        - --force
   install-dart:
     -
       exec: pub
@@ -27,20 +29,32 @@ commands:
         - global
         - activate
         - ${name}
+        - --overwrite
   install-npm:
     -
       exec: npm
       args:
         - --global
+        - --force
         - install
         - ${name}
   install-flutter:
+    -
+      exec: rm
+      args:
+        - -rf
+        - flutter-sdk
     -
       exec: git
       args:
         - clone
         - https://github.com/flutter/flutter.git
         - flutter-sdk
+    -
+      exec: rm
+      args:
+        - -rf
+        - /usr/local/var/flutter-sdk
     -
       exec: mv
       args:
@@ -133,13 +147,18 @@ packages:
     type: flutter
     bash:
       - export PATH=/usr/local/var/flutter-sdk/bin:$PATH
+  visual-studio-code:
+    type: cask
+    cmd: code
+    bash:
+      - code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 
 # Collections are logical groups of packages.
 # A collection can have many packages and nested collections.
 # Hidden collections are useful for composition but they won't show up in the menu.
 
 collections:
-  java:
+  jvm:
     hidden: true
     packages:
       - java
@@ -153,6 +172,7 @@ collections:
     packages:
       - npm
       - atom
+      - visual-studio-code
   web:
     packages:
       - angular_cli
@@ -167,20 +187,19 @@ collections:
       - flutter
     collections:
       - basic
-      - java
+      - jvm
   backend:
     packages:
       - aqueduct
     collections:
+      - jvm
       - basic
-      - java
   frontend:
     collections:
-      - basic
       - mobile
       - web
   all:
     collections:
-      - basic
       - mobile
       - web
+      - backend

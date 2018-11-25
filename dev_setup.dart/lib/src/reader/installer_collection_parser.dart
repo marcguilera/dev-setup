@@ -1,22 +1,23 @@
-import 'package:dev_setup/dev_setup.dart';
-import 'package:yaml/yaml.dart';
+import 'package:dev_setup/indernal.dart';
 
 const CONFIG = "../config.yaml";
 
 class InstallerCollectionParser {
-  final Map yaml;
-  YamlMap get typesYaml => yaml["types"];
-  YamlMap get packagesYaml => yaml["packages"];
-  YamlMap get collectionsYaml => yaml["collections"];
-  YamlMap get commandsYaml => yaml["commands"];
+  final Map _yaml;
+  YamlMap get _typesYaml => _yaml["types"];
+  YamlMap get _packagesYaml => _yaml["packages"];
+  YamlMap get _collectionsYaml => _yaml["collections"];
+  YamlMap get _commandsYaml => _yaml["commands"];
 
-  InstallerCollectionParser(this.yaml);
+  InstallerCollectionParser(this._yaml);
   factory InstallerCollectionParser.fromFile(String path) =>
       InstallerCollectionParser(FileReader.read(path));
+  factory InstallerCollectionParser.generic() =>
+      InstallerCollectionParser.fromFile(CONFIG);
 
   Iterable<InstallerCollection> parse() {
     final Map<String, InstallerCollection> collections = {};
-    collectionsYaml?.forEach((key, value) {
+    _collectionsYaml?.forEach((key, value) {
       collections[key] = _parseCollection(key, value);
     });
     return collections.values;
@@ -27,14 +28,14 @@ class InstallerCollectionParser {
 
     // Nested collections
     collectionYaml["collections"]?.forEach((name) {
-      final collection = _parseCollection(name, collectionsYaml[name]);
+      final collection = _parseCollection(name, _collectionsYaml[name]);
       final entries = collection.installers.map((i) => MapEntry(i.name, i));
       installers.addEntries(entries);
     });
 
     // Packages
     collectionYaml["packages"]?.forEach((name) {
-      installers.putIfAbsent(name, () => _parsePackage(name, packagesYaml[name]));
+      installers.putIfAbsent(name, () => _parsePackage(name, _packagesYaml[name]));
     });
 
     return InstallerCollection(
@@ -48,7 +49,7 @@ class InstallerCollectionParser {
     final typeName = packageYaml["type"];
     return Installer(
       name: name,
-      type: _parseType(typeName, typesYaml[typeName]),
+      type: _parseType(typeName, _typesYaml[typeName]),
       cmd: packageYaml["cmd"],
       bash: packageYaml["bash"]?.cast<String>()
     );
@@ -64,7 +65,7 @@ class InstallerCollectionParser {
   }
 
   Iterable<Command> _parseCommand(String name) {
-    YamlList commandsYaml = this.commandsYaml[name];
+    YamlList commandsYaml = this._commandsYaml[name];
     return commandsYaml.map((commandYaml) => Command(
       exec: commandYaml["exec"],
       args: commandYaml["args"]?.cast<String>()

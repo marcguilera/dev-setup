@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+import 'package:dev_setup/indernal.dart';
 
 class Command {
   final String exec;

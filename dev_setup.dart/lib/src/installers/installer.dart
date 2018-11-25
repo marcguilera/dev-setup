@@ -1,6 +1,4 @@
-import 'dart:io';
-import 'package:dev_setup/dev_setup.dart';
-import 'package:meta/meta.dart';
+import 'package:dev_setup/indernal.dart';
 
 class Installer {
 
@@ -19,10 +17,7 @@ class Installer {
       this.bash = bash ?? const [],
       this.type = type;
 
-  bool get isInstalled => type.isInstalled.any((run) {
-    final result = _run(run);
-    return result != null && result.trim().isNotEmpty;
-  });
+  bool get isInstalled => type.isInstalled.any((run) => !isBlank(_run(run)));
 
   void install() => type.install.forEach(_run);
 
