@@ -1,7 +1,7 @@
 import 'package:dev_setup/dev_setup.dart';
 import 'package:console/console.dart';
 
-main(List<String> arguments) async {
+main(List<String> arguments) {
   Console.init();
-  await setup(arguments);
+  setup(arguments);
 }

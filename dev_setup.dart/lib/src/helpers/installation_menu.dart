@@ -1,43 +1,34 @@
 import 'package:dev_setup/dev_setup.dart';
 
-enum InstallationOption {
-  basic,
-  web,
-  mobile,
-  backend,
-  extras,
-  all
-}
-
 class InstallationMenu {
 
   final InstallationHandler handler;
+  final Iterable<InstallerCollection> collections;
 
-  InstallationMenu(this.handler);
-
-  static Future show() async {
+  InstallationMenu(this.handler, this.collections);
+  factory InstallationMenu.generic(Iterable<InstallerCollection> collections) {
     final handler = InstallationHandler();
-    final menu = InstallationMenu(handler);
-    await menu.draw();
+    return InstallationMenu(handler, collections);
   }
 
-  Future draw() async {
+  void draw() {
     writeLine("Dev Setup", bold: true);
     nextLine();
     final installation = _showMenu();
-    await handler.install(installation);
+    handler.install(installation);
   }
 
   InstallerCollection _showMenu() {
     final message = "Choose an option to install: ";
-    String formatOption(InstallationOption option) =>
-        option.toString().replaceAll("InstallationOption.", "");
-    String formatChooser (InstallationOption option, int index) =>
-        "[$index] ${formatOption(option)}";
-    final chooser = Chooser(InstallationOption.values, formatter: formatChooser, message: message);
+    final options = collections
+        .where((collection) => !collection.isHidden)
+        .map((collection) => collection.name)
+        .toList();
+    final chooser = Chooser(options, message: message);
     final option = doChoose(chooser);
-    final installation = InstallerCollection.fromOption(option);
-    writeLine("You chose to install ${formatOption(option)}. Let's go!\n");
+    final installation = collections
+        .firstWhere((collection) => collection.name == option);
+    writeLine("You chose to install $option. Let's go!\n");
     return installation;
   }
 

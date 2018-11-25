@@ -1,0 +1,118 @@
+types:
+  brew:
+    cmd: brew
+    args:
+      - install
+  cask:
+    cmd: brew
+    args:
+      - cask
+      - install
+  dart:
+    cmd: pub
+    args:
+      - global
+      - activate
+  npm:
+    cmd: npm
+    args:
+      - install
+      - --global
+packages:
+  java:
+    type: cask
+  kotlin:
+    type: brew
+  ant:
+    type: brew
+  maven:
+    type: brew
+    cmd: mvn
+  gradle:
+    type: brew
+  intellij-idea:
+    type: cask
+    cmd: idea
+  aqueduct:
+    type: dart
+  npm:
+    type: brew
+  git:
+    type: brew
+  docker-toolbox:
+    type: cask
+    cmd: docker
+  stagehand:
+    type: dart
+  yo:
+    type: npm
+  atom:
+    type: cask
+  ios-deploy:
+    type: brew
+  cocoapods:
+    type: brew
+    cmd: pod
+  android-sdk:
+    type: cask
+    cmd: android
+    bash:
+      - export ANDROID_HOME=/usr/local/bin/android
+      - export PATH=\$PATH:\$ANDROID_HOME/tools
+      - export PATH=\$PATH:\$ANDROID_HOME/tools/bin
+      - export PATH=\$PATH/:\$ANDROID_HOME/platform-tools
+  angular_cli:
+    type: dart
+    cmd: ngdart
+collections:
+  java:
+    hidden: true
+    packages:
+      - java
+      - kotlin
+      - ant
+      - maven
+      - gradle
+      - intellij-idea
+  basic:
+    packages:
+      - npm
+  extras:
+    packages:
+      - git
+      - docker-toolbox
+      - stagehand
+      - yo
+      - atom
+    collections:
+      - basic
+  web:
+    packages:
+      - angular_cli
+    collections:
+      - basic
+  mobile:
+    packages:
+      - android-sdk
+      - ios-deploy
+      - cocoapods
+    collections:
+      - basic
+      - java
+  backend:
+    packages:
+      - aqueduct
+    collections:
+      - basic
+      - java
+  frontend:
+    collections:
+      - basic
+      - mobile
+      - web
+  all:
+    collections:
+      - basic
+      - mobile
+      - web
+      - extras
