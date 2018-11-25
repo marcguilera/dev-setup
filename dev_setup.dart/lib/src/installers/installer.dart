@@ -26,20 +26,18 @@ class Installer {
 
   void install() => type.install.forEach(_run);
 
-  String _run(String run) {
-    final formatted = _format(run);
-    final arr = formatted.split(" ");
-    final exec = arr.first;
-    final params = arr.length > 1 ? arr.sublist(1) : const [];
-    final proc = Process.runSync(exec, params, runInShell: true);
+  String _run(Command command) {
+    final execFmt = _format(command.exec);
+    final argsFmt = command.args.map(_format).toList();
+    final proc = Process.runSync(execFmt, argsFmt, runInShell: true);
     final  String err = proc.stderr;
     if (err!= null && err.isNotEmpty) {
-      throw Exception("Error executing command [$formatted]: $err");
+      throw Exception("Error executing command [$execFmt ${argsFmt.join(" ")}]: $err");
     }
     return proc.stdout;
   }
 
   String _format(String run) => run
-    .replaceAll("{cmd}", cmd)
-    .replaceAll("{name}", name);
+    .replaceAll("\${cmd}", cmd)
+    .replaceAll("\${name}", name);
 }

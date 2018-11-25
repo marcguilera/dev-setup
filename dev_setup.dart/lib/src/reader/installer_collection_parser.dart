@@ -1,12 +1,14 @@
 import 'package:dev_setup/dev_setup.dart';
+import 'package:yaml/yaml.dart';
 
 final CONFIG = "../config.yaml";
 
 class InstallerCollectionParser {
   final Map yaml;
-  Map get typesYaml => yaml["types"];
-  Map get packagesYaml => yaml["packages"];
-  Map get collectionsYaml => yaml["collections"];
+  YamlMap get typesYaml => yaml["types"];
+  YamlMap get packagesYaml => yaml["packages"];
+  YamlMap get collectionsYaml => yaml["collections"];
+  YamlMap get commandsYaml => yaml["commands"];
 
   InstallerCollectionParser(this.yaml);
   factory InstallerCollectionParser.fromFile(String path) =>
@@ -21,15 +23,13 @@ class InstallerCollectionParser {
   }
 
   InstallerCollection _parseCollection(String name, Map collectionYaml) {
-    final isPrivate = collectionYaml["hidden"] ?? false;
     final Map<String, Installer> installers = {};
 
     // Nested collections
     collectionYaml["collections"]?.forEach((name) {
       final collection = _parseCollection(name, collectionsYaml[name]);
-      collection.installers.forEach((installer) {
-        installers.putIfAbsent(installer.name, () => installer);
-      });
+      final entries = collection.installers.map((i) => MapEntry(i.name, i));
+      installers.addEntries(entries);
     });
 
     // Packages
@@ -39,30 +39,35 @@ class InstallerCollectionParser {
 
     return InstallerCollection(
       name: name,
-      isPrivate: isPrivate,
+      isPrivate: collectionYaml["hidden"] ?? false,
       installers: installers.values
     );
   }
 
-  Installer _parsePackage(String name, Map packageYaml) {
+  Installer _parsePackage(String name, YamlMap packageYaml) {
     final typeName = packageYaml["type"];
-    final type = _parseType(typesYaml[typeName]);
-    final cmd = packageYaml["cmd"];
-    final bash = packageYaml["bash"];
     return Installer(
       name: name,
-      type: type,
-      cmd: cmd,
-      bash: bash?.cast<String>()
+      type: _parseType(typeName, typesYaml[typeName]),
+      cmd: packageYaml["cmd"],
+      bash: packageYaml["bash"]?.cast<String>()
     );
   }
 
-  InstallerType _parseType(Map typeYaml) {
-    final install = typeYaml["install"];
-    final isInstalled = typeYaml["is_installed"];
+  InstallerType _parseType(String name, YamlMap typeYaml) {
+    YamlList installYaml = typeYaml["install"];
+    YamlList isInstalledYaml = typeYaml["is_installed"];
     return InstallerType(
-      install: install?.cast<String>(),
-      isInstalled: isInstalled?.cast<String>()
+      install: installYaml.cast<String>().map(_getCommand),
+      isInstalled: isInstalledYaml.cast<String>().map(_getCommand)
+    );
+  }
+
+  Command _getCommand(String name) {
+    final commandYaml = commandsYaml[name];
+    return Command(
+        exec: commandYaml["exec"],
+        args: commandYaml["args"]?.cast<String>()
     );
   }
 }

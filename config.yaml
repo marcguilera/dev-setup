@@ -1,26 +1,58 @@
+# Types of commands which can be executed.
+
+commands:
+  exists:
+    exec: command
+    args:
+      - -v
+      - ${cmd}
+  install-brew:
+    exec: brew
+    args:
+      - install
+      - ${name}
+  install-cask:
+    exec: brew
+    args:
+      - cask
+      - install
+      - ${name}
+  install-dart:
+    exec: pub
+    args:
+      - global
+      - activate
+      - ${name}
+  install-npm:
+    exec: npm
+    args:
+      - --global
+      - install
+      - ${name}
+
 # Types of installations available and how to execute them.
 
 types:
   brew:
     install:
-      - brew install {name}
+      - install-brew
     is_installed:
-      - command -v {cmd}
+      - exists
   cask:
     install:
-      - brew cask install {name}
+      - install-cask
     is_installed:
-      - command -v {cmd}
+      - exists
   dart:
     install:
-      - pub global activate {name}
+      - install-dart
     is_installed:
-      - command -v {cmd}
+      - exists
   npm:
     install:
-      - npm install --global {name}
+      - install-npm
     is_installed:
-      - command -v {cmd}
+      - exists
 
 # The packages to install and which installation type to use.
 

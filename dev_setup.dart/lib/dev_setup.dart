@@ -2,6 +2,7 @@ library dev_setup;
 
 export 'src/collections/installer_collection.dart';
 export 'src/installers/installer.dart';
+export 'src/installers/command.dart';
 export 'package:console/console.dart';
 export 'src/common/console.dart';
 export 'src/helpers/installation_handler.dart';
