@@ -19,21 +19,27 @@ class Installer {
       this.bash = bash ?? const [],
       this.type = type;
 
-  bool get isInstalled {
-    final result = _run(cmd: "command", args: ["-v", cmd]);
+  bool get isInstalled => type.isInstalled.any((run) {
+    final result = _run(run);
     return result != null && result.isNotEmpty;
-  }
+  });
 
-  void install() {
-    _run(cmd: type.cmd, args: type.args.toList()..add(name));
-  }
+  void install() => type.install.forEach(_run);
 
-  static String _run({String cmd, List<String> args = const []}) {
-    final proc = Process.runSync(cmd, args, runInShell: true);
+  String _run(String run) {
+    final formatted = _format(run);
+    final arr = formatted.split(" ");
+    final exec = arr.first;
+    final params = arr.length > 1 ? arr.sublist(1) : const [];
+    final proc = Process.runSync(exec, params, runInShell: true);
     final  String err = proc.stderr;
     if (err!= null && err.isNotEmpty) {
-      throw Exception("Error executing command [$cmd ${args.join(" ")}]: $err");
+      throw Exception("Error executing command [$formatted]: $err");
     }
     return proc.stdout;
   }
+
+  String _format(String run) => run
+    .replaceAll("{cmd}", cmd)
+    .replaceAll("{name}", name);
 }

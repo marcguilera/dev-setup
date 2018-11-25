@@ -46,7 +46,7 @@ class InstallerCollectionParser {
 
   Installer _parsePackage(String name, Map packageYaml) {
     final typeName = packageYaml["type"];
-    final type = _parseType(typeName, typesYaml[typeName]);
+    final type = _parseType(typesYaml[typeName]);
     final cmd = packageYaml["cmd"];
     final bash = packageYaml["bash"];
     return Installer(
@@ -57,13 +57,12 @@ class InstallerCollectionParser {
     );
   }
 
-  InstallerType _parseType(String name, Map typeYaml) {
-    final cmd = typeYaml["cmd"];
-    final args = typeYaml["args"];
+  InstallerType _parseType(Map typeYaml) {
+    final install = typeYaml["install"];
+    final isInstalled = typeYaml["is_installed"];
     return InstallerType(
-      name: name,
-      cmd: cmd,
-      args: args?.cast<String>()
+      install: install?.cast<String>(),
+      isInstalled: isInstalled?.cast<String>()
     );
   }
 }

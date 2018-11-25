@@ -1,25 +1,29 @@
 # Types of installations available and how to execute them.
+
 types:
   brew:
-    cmd: brew
-    args:
-      - install
+    install:
+      - brew install {name}
+    is_installed:
+      - command -v {cmd}
   cask:
-    cmd: brew
-    args:
-      - cask
-      - install
+    install:
+      - brew cask install {name}
+    is_installed:
+      - command -v {cmd}
   dart:
-    cmd: pub
-    args:
-      - global
-      - activate
+    install:
+      - pub global activate {name}
+    is_installed:
+      - command -v {cmd}
   npm:
-    cmd: npm
-    args:
-      - install
-      - --global
+    install:
+      - npm install --global {name}
+    is_installed:
+      - command -v {cmd}
+
 # The packages to install and which installation type to use.
+
 packages:
   java:
     type: cask
@@ -66,9 +70,17 @@ packages:
   angular_cli:
     type: dart
     cmd: ngdart
-# Logical groups of packages.
+  npm-gui:
+    type: npm
+  spotify:
+    type: cask
+  google-chrome:
+    type: cask
+
+# Collections are logical groups of packages.
 # A collection can have many packages and nested collections.
 # Hidden collections are useful for composition but they won't show up in the menu.
+
 collections:
   java:
     hidden: true
@@ -89,11 +101,13 @@ collections:
       - stagehand
       - yo
       - atom
+      - npm-gui
     collections:
       - basic
   web:
     packages:
       - angular_cli
+      - google-chrome
     collections:
       - basic
   mobile:
@@ -115,9 +129,23 @@ collections:
       - basic
       - mobile
       - web
-  all:
+  dev-all:
     collections:
       - basic
       - mobile
       - web
       - extras
+  software:
+    packages:
+      - spotify
+      - google-chrome
+      - intellij-idea
+      - atom
+  media:
+    packages:
+      - spotify
+      - google-chrome
+  all:
+    collections:
+      - dev-all
+      - software
