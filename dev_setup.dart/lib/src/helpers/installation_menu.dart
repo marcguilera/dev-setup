@@ -22,14 +22,18 @@ class InstallationMenu {
     final message = "Choose an option to install: ";
     final options = collections
         .where((collection) => !collection.isHidden)
-        .map((collection) => collection.name)
+        .map(_format)
         .toList();
     final chooser = Chooser(options, message: message);
     final option = doChoose(chooser);
     final installation = collections
-        .firstWhere((collection) => collection.name == option);
+        .firstWhere((collection) => _format(collection) == option);
     writeLine("You chose to install $option. Let's go!\n");
     return installation;
+  }
+  
+  String _format(InstallerCollection collection) {
+    return "${collection.name} <${collection.installers.length}>";
   }
 
 }
