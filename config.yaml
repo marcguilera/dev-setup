@@ -1,3 +1,4 @@
+# Types of installations available and how to execute them.
 types:
   brew:
     cmd: brew
@@ -18,6 +19,7 @@ types:
     args:
       - install
       - --global
+# The packages to install and which installation type to use.
 packages:
   java:
     type: cask
@@ -64,6 +66,9 @@ packages:
   angular_cli:
     type: dart
     cmd: ngdart
+# Logical groups of packages.
+# A collection can have many packages and nested collections.
+# Hidden collections are useful for composition but they won't show up in the menu.
 collections:
   java:
     hidden: true

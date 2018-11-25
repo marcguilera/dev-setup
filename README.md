@@ -11,6 +11,8 @@ There are a couple of predefined setups:
 * Mobile
 * Extras
 
+To add more installations, modify the `config.yaml`.
+
 Currently it only works for Mac since it relies on `brew`.
 
 # Example
