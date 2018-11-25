@@ -58,16 +58,17 @@ class InstallerCollectionParser {
     YamlList installYaml = typeYaml["install"];
     YamlList isInstalledYaml = typeYaml["is_installed"];
     return InstallerType(
-      install: installYaml.cast<String>().map(_getCommand),
-      isInstalled: isInstalledYaml.cast<String>().map(_getCommand)
+      install: installYaml.cast<String>().map(_parseCommand).expand((x) => x),
+      isInstalled: isInstalledYaml.cast<String>().map(_parseCommand).expand((x) => x)
     );
   }
 
-  Command _getCommand(String name) {
-    final commandYaml = commandsYaml[name];
-    return Command(
-        exec: commandYaml["exec"],
-        args: commandYaml["args"]?.cast<String>()
-    );
+  Iterable<Command> _parseCommand(String name) {
+    YamlList commandsYaml = this.commandsYaml[name];
+    return commandsYaml.map((commandYaml) => Command(
+      exec: commandYaml["exec"],
+      args: commandYaml["args"]?.cast<String>()
+    ));
+
   }
 }

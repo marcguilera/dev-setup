@@ -6,6 +6,6 @@ class Command {
 
   const Command({
     @required this.exec,
-    Iterable<String> args
+    Iterable<String> args,
   }): this.args = args ?? const[];
 }

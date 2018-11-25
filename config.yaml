@@ -2,33 +2,58 @@
 
 commands:
   exists:
-    exec: command
-    args:
-      - -v
-      - ${cmd}
+    -
+      exec: command
+      args:
+        - -v
+        - ${cmd}
   install-brew:
-    exec: brew
-    args:
-      - install
-      - ${name}
+    -
+      exec: brew
+      args:
+        - install
+        - ${name}
   install-cask:
-    exec: brew
-    args:
-      - cask
-      - install
-      - ${name}
+    -
+      exec: brew
+      args:
+        - cask
+        - install
+        - ${name}
   install-dart:
-    exec: pub
-    args:
-      - global
-      - activate
-      - ${name}
+    -
+      exec: pub
+      args:
+        - global
+        - activate
+        - ${name}
   install-npm:
-    exec: npm
-    args:
-      - --global
-      - install
-      - ${name}
+    -
+      exec: npm
+      args:
+        - --global
+        - install
+        - ${name}
+  install-flutter:
+    -
+      exec: git
+      args:
+        - clone
+        - https://github.com/flutter/flutter.git
+        - flutter-sdk
+    -
+      exec: mv
+      args:
+        - flutter-sdk/
+        - /usr/local/var/flutter-sdk
+    -
+      exec: rm
+      args:
+        - -rf
+        - flutter-sdk
+  nothing:
+    -
+      exec: echo
 
 # Types of installations available and how to execute them.
 
@@ -53,6 +78,11 @@ types:
       - install-npm
     is_installed:
       - exists
+  flutter:
+    install:
+      - install-flutter
+    is_installed:
+      - nothing
 
 # The packages to install and which installation type to use.
 
@@ -96,18 +126,18 @@ packages:
     cmd: android
     bash:
       - export ANDROID_HOME=/usr/local/bin/android
-      - export PATH=\$PATH:\$ANDROID_HOME/tools
-      - export PATH=\$PATH:\$ANDROID_HOME/tools/bin
-      - export PATH=\$PATH/:\$ANDROID_HOME/platform-tools
+      - export PATH=$PATH:\$ANDROID_HOME/tools
+      - export PATH=$PATH:\$ANDROID_HOME/tools/bin
+      - export PATH=$PATH/:\$ANDROID_HOME/platform-tools
   angular_cli:
     type: dart
     cmd: ngdart
   npm-gui:
     type: npm
-  spotify:
-    type: cask
-  google-chrome:
-    type: cask
+  flutter:
+    type: flutter
+    bash:
+      - export PATH=/usr/local/var/flutter-sdk/bin:$PATH
 
 # Collections are logical groups of packages.
 # A collection can have many packages and nested collections.
@@ -124,22 +154,14 @@ collections:
       - gradle
       - intellij-idea
   basic:
+    hidden: true
     packages:
       - npm
-  extras:
-    packages:
-      - git
-      - docker-toolbox
-      - stagehand
-      - yo
       - atom
-      - npm-gui
-    collections:
-      - basic
   web:
     packages:
       - angular_cli
-      - google-chrome
+      - npm-gui
     collections:
       - basic
   mobile:
@@ -147,6 +169,7 @@ collections:
       - android-sdk
       - ios-deploy
       - cocoapods
+      - flutter
     collections:
       - basic
       - java
@@ -161,23 +184,8 @@ collections:
       - basic
       - mobile
       - web
-  dev-all:
+  all:
     collections:
       - basic
       - mobile
       - web
-      - extras
-  software:
-    packages:
-      - spotify
-      - google-chrome
-      - intellij-idea
-      - atom
-  media:
-    packages:
-      - spotify
-      - google-chrome
-  all:
-    collections:
-      - dev-all
-      - software
