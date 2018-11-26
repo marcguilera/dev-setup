@@ -16,22 +16,22 @@ class InstallerCollectionParser {
       InstallerCollectionParser.fromFile(CONFIG);
 
   Iterable<InstallerCollection> parse() {
-    final Map<String, _InstallerCollection> collections = {};
+    final collections = List<_InstallerCollection>();
     _collectionsYaml?.forEach((key, value) {
-      collections[key] = _parseCollection(key, value);
+      final collection = _parseCollection(key, value);
+      collections.add(collection);
     });
-    final result = collections.values.where((i) => !i.isHidden);
-    return InstallerCollections(result);
+    final notHidden = collections.where((i) => !i.isHidden);
+    return InstallerCollections(notHidden);
   }
 
   _InstallerCollection _parseCollection(String name, Map collectionYaml) {
-    final Map<String, Installer> installers = {};
-
+    final installers = Map<String, Installer>();
+    
     // Nested collections
     collectionYaml["collections"]?.forEach((name) {
       final collection = _parseCollection(name, _collectionsYaml[name]);
-      final entries = collection.map((i) => MapEntry(i.name, i));
-      installers.addEntries(entries);
+      collection.forEach((i) => installers[i.name] = i);
     });
 
     // Packages
@@ -57,11 +57,13 @@ class InstallerCollectionParser {
   }
 
   InstallerType _parseType(String name, YamlMap typeYaml) {
-    YamlList installYaml = typeYaml["install"];
-    YamlList isInstalledYaml = typeYaml["is_installed"];
+    Iterable<Command> get(String name) {
+      YamlList installYaml = typeYaml[name];
+      return installYaml.cast<String>().map(_parseCommand).expand((x) => x);
+    }
     return InstallerType(
-      install: installYaml.cast<String>().map(_parseCommand).expand((x) => x).toList(),
-      isInstalled: isInstalledYaml.cast<String>().map(_parseCommand).expand((x) => x).toList()
+      install: get("install"),
+      isInstalled: get("is_installed")
     );
   }
 

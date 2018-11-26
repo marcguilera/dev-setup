@@ -15,3 +15,4 @@ export 'src/views/installation_result_renderer.dart';
 export 'src/helpers/installation_autority.dart';
 export 'src/collections/installer_collections.dart';
 export 'package:collection/collection.dart';
+export 'src/common/utils.dart';
