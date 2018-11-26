@@ -27,7 +27,7 @@ class InstallerCollectionParser {
 
   _InstallerCollection _parseCollection(String name, Map collectionYaml) {
     final installers = Map<String, Installer>();
-    
+
     // Nested collections
     collectionYaml["collections"]?.forEach((name) {
       final collection = _parseCollection(name, _collectionsYaml[name]);
@@ -73,7 +73,6 @@ class InstallerCollectionParser {
       exec: commandYaml["exec"],
       args: commandYaml["args"]?.cast<String>()
     ));
-
   }
 }
 

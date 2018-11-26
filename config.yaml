@@ -143,6 +143,8 @@ packages:
     cmd: ngdart
   npm-gui:
     type: npm
+  scala:
+    type: brew
   flutter:
     type: flutter
     bash:
@@ -167,6 +169,7 @@ collections:
       - maven
       - gradle
       - intellij-idea
+      - scala
   basic:
     hidden: true
     packages:
@@ -192,8 +195,8 @@ collections:
     packages:
       - aqueduct
     collections:
-      - jvm
       - basic
+      - jvm
   frontend:
     collections:
       - mobile
