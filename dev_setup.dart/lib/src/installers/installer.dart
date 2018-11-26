@@ -17,7 +17,10 @@ class Installer {
       this.bash = bash ?? const [],
       this.type = type;
 
-  bool get isInstalled => type.isInstalled.any((run) => !isBlank(_run(run)));
+  bool get isInstalled => type.isInstalled.any((run) {
+    final result = _run(run);
+    return result != null && result.trim().isNotEmpty;
+  });
 
   void install() => type.install.forEach(_run);
 

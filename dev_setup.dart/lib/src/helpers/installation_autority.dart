@@ -2,25 +2,13 @@ import 'package:dev_setup/indernal.dart';
 
 const BASH_PROFILE = "~/.bash_profile";
 
-class InstallationResult {
-  final Iterable<Installer> installed;
-  final Iterable<Installer> skipped;
-  final Iterable<Installer> notInstalled;
-  final Stopwatch stopwatch;
-  final Iterable<String> bash;
+class InstallerAuthority {
 
-  const InstallationResult({
-    @required this.installed,
-    @required this.skipped,
-    @required this.notInstalled,
-    @required this.stopwatch,
-    @required this.bash
-  });
-}
+  final InstallerCollection _collection;
 
-class InstallationHandler {
+  InstallerAuthority(this._collection);
 
-  InstallationResult install(InstallerCollection installation) {
+  InstallationResult install() {
 
     final installed = List<Installer>();
     final skipped = List<Installer>();
@@ -29,10 +17,10 @@ class InstallationHandler {
     final bash = List<String>();
 
     stopwatch.start();
-    final size = installation.installers.length;
-
-    installation.installers.toList().asMap().forEach((i, installer) {
-      final leading = "[${i+1}/$size]";
+    final size = _collection.length;
+    var i = 1;
+    for (var installer in _collection) {
+      final leading = "[${i++}/$size]";
       if (!installer.isInstalled) {
         final prompter = Prompter("  > Do you want to install '${installer.name}'? ");
         if (doPrompt(prompter)) {
@@ -49,11 +37,11 @@ class InstallationHandler {
         writeLine("$leading '${installer.name}' is already installed, skipping...", color: Color.GRAY);
         skipped.add(installer);
       }
-    });
+    }
 
     stopwatch.stop();
 
-    return InstallationResult(
+    return InstallationResult._(
       installed: installed,
       skipped: skipped,
       notInstalled: notInstalled,
@@ -61,4 +49,20 @@ class InstallationHandler {
       bash: bash
     );
   }
+}
+
+class InstallationResult {
+  final Iterable<Installer> installed;
+  final Iterable<Installer> skipped;
+  final Iterable<Installer> notInstalled;
+  final Stopwatch stopwatch;
+  final Iterable<String> bash;
+
+  const InstallationResult._({
+    @required this.installed,
+    @required this.skipped,
+    @required this.notInstalled,
+    @required this.stopwatch,
+    @required this.bash
+  });
 }

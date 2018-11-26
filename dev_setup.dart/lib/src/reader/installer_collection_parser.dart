@@ -16,20 +16,21 @@ class InstallerCollectionParser {
       InstallerCollectionParser.fromFile(CONFIG);
 
   Iterable<InstallerCollection> parse() {
-    final Map<String, InstallerCollection> collections = {};
+    final Map<String, _InstallerCollection> collections = {};
     _collectionsYaml?.forEach((key, value) {
       collections[key] = _parseCollection(key, value);
     });
-    return collections.values;
+    final result = collections.values.where((i) => !i.isHidden);
+    return InstallerCollections(result);
   }
 
-  InstallerCollection _parseCollection(String name, Map collectionYaml) {
+  _InstallerCollection _parseCollection(String name, Map collectionYaml) {
     final Map<String, Installer> installers = {};
 
     // Nested collections
     collectionYaml["collections"]?.forEach((name) {
       final collection = _parseCollection(name, _collectionsYaml[name]);
-      final entries = collection.installers.map((i) => MapEntry(i.name, i));
+      final entries = collection.map((i) => MapEntry(i.name, i));
       installers.addEntries(entries);
     });
 
@@ -38,9 +39,9 @@ class InstallerCollectionParser {
       installers.putIfAbsent(name, () => _parsePackage(name, _packagesYaml[name]));
     });
 
-    return InstallerCollection(
+    return _InstallerCollection(
       name: name,
-      isPrivate: collectionYaml["hidden"] ?? false,
+      isHidden: collectionYaml["hidden"],
       installers: installers.values
     );
   }
@@ -72,4 +73,15 @@ class InstallerCollectionParser {
     ));
 
   }
+}
+
+class _InstallerCollection extends InstallerCollection {
+  final bool isHidden;
+
+  const _InstallerCollection({
+    @required String name,
+    bool isHidden,
+    Iterable<Installer> installers
+  }): this.isHidden = isHidden ?? false,
+      super(name: name, installers: installers);
 }
